@@ -1,7 +1,6 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu, QTableWidget, QTableWidgetItem, QToolBar, QStatusBar, QFileDialog, QMessageBox, QCheckBox
-from PySide6.QtGui import QIcon, QAction
-from PySide6.QtCore import QTimer
+
+from PySide6.QtWidgets import QMainWindow
 
 from .config import load_config, save_config, Config, RepoEntry
 from .git_agent import check_has_origin
@@ -64,6 +63,10 @@ class MainWindow(QMainWindow):
             self.populate_table()
 
 def main():
+    from PySide6.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QTableWidget, QTableWidgetItem, QToolBar, QStatusBar, QFileDialog, QMessageBox, QCheckBox, QAction
+    from PySide6.QtGui import QIcon
+    from PySide6.QtCore import QTimer
+    
     app = QApplication(sys.argv)
     window = MainWindow()
     
