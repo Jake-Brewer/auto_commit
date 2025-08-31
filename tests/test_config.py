@@ -1,20 +1,21 @@
 import pytest
-from auto_commit.config import Config, RepoEntry, load_config, save_config
-from unittest.mock import patch
 import json
+from unittest.mock import MagicMock
+
+from auto_commit.config import load_config, save_config, RepoEntry, Config, Status
 
 def test_config_creation():
     config = Config()
     assert config.monitored_repos == []
-    assert config.ui.window_size == [960, 640]
-    assert config.settings.gh_token_env == "GH_TOKEN"
 
 def test_repo_entry_creation():
-    repo = RepoEntry(path="/test", has_origin=True, debounce_ms=3000)
+    repo = RepoEntry(path="/test", has_origin=True)
     assert repo.path == "/test"
     assert repo.has_origin == True
-    assert repo.debounce_ms == 3000
-    assert repo.last_status == "OK"
+    assert repo.last_status == Status.OK
+    assert repo.debounce_ms == 2000
+    assert repo.auto_init == False
+    assert repo.paused == False
 
 def test_load_config(tmp_path, mocker):
     config_path = tmp_path / "config.json"
@@ -42,7 +43,6 @@ def test_save_config(tmp_path, mocker):
     assert data["monitored_repos"][0]["path"] == "/test"
 
 def test_load_config_full(tmp_path, mocker):
-    from auto_commit.config import Status
     config_path = tmp_path / "config.json"
     data = {
         "monitored_repos": [

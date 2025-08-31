@@ -16,6 +16,7 @@ def test_e2e_app_start(mocker):
     mock_icon = mocker.patch('PySide6.QtGui.QIcon')
     mock_action = mocker.patch('PySide6.QtGui.QAction')
     mock_menu = mocker.patch('PySide6.QtWidgets.QMenu')
+    mock_controller = mocker.patch('auto_commit.main.ConfigController')
     mock_app.return_value.exec.return_value = 0
     with patch('sys.exit'):
         from auto_commit.main import main

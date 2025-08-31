@@ -1,22 +1,29 @@
 import json
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 from typing import List
 import platformdirs
+
+class Status(Enum):
+    OK = "OK"
+    NO_ORIGIN = "NO_ORIGIN"
+    ERROR = "ERROR"
 
 @dataclass
 class RepoEntry:
     path: str
     has_origin: bool = False
-    last_status: str = "OK"
+    last_status: Status = Status.OK
     debounce_ms: int = 2000
     auto_init: bool = False
     paused: bool = False
 
 @dataclass
 class UISettings:
-    window_size: List[int] = field(default_factory=lambda: [960, 640])
-    column_widths: List[int] = field(default_factory=lambda: [420, 120, 120])
+    window_size: list[int] = field(default_factory=lambda: [960, 640])
+    column_widths: list[int] = field(default_factory=lambda: [420, 120, 120])
+    minimized_to_tray: bool = False
 
 @dataclass
 class AppSettings:
