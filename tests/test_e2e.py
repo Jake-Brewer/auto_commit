@@ -7,8 +7,10 @@ def test_e2e_app_start(mocker):
     from auto_commit.main import main
     mock_app = mocker.patch('auto_commit.main.QApplication')
     mock_window = mocker.patch('auto_commit.main.MainWindow')
+    mock_tray = mocker.patch('auto_commit.main.QSystemTrayIcon')
     mock_app.return_value.exec.return_value = 0
     with patch('sys.exit'):
         main()
     mock_app.assert_called_once()
     mock_window.assert_called_once()
+    mock_tray.assert_called_once()

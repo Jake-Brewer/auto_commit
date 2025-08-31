@@ -8,6 +8,7 @@ def test_functional_add_remove_repo(mocker):
     mock_save = mocker.patch('auto_commit.main.save_config')
     mock_check = mocker.patch('auto_commit.main.check_has_origin', return_value=True)
     mock_dialog = mocker.patch('auto_commit.main.QFileDialog.getExistingDirectory', return_value='/test')
+    mock_tray = mocker.patch('auto_commit.main.QSystemTrayIcon')
     window = MainWindow()
     window.add_repo()
     mock_save.assert_called()
