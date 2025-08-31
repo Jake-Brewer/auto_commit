@@ -17,7 +17,6 @@ class RepoEntry:
 class UISettings:
     window_size: List[int] = field(default_factory=lambda: [960, 640])
     column_widths: List[int] = field(default_factory=lambda: [420, 120, 120])
-    minimized_to_tray: bool = True
 
 @dataclass
 class AppSettings:
@@ -26,7 +25,7 @@ class AppSettings:
 
 @dataclass
 class Config:
-    monitored_repos: List[RepoEntry] = field(default_factory=list)
+    monitored_repos: list[RepoEntry] = field(default_factory=list)
     ui: UISettings = field(default_factory=UISettings)
     settings: AppSettings = field(default_factory=AppSettings)
 
@@ -41,7 +40,11 @@ def load_config() -> Config:
         with open(config_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         config = Config()
-        config.monitored_repos = [RepoEntry(**repo) for repo in data.get("monitored_repos", [])]
+        config.monitored_repos = []
+        for repo_data in data.get("monitored_repos", []):
+            repo = RepoEntry(**repo_data)
+            repo.last_status = Status(repo.last_status)
+            config.monitored_repos.append(repo)
         config.ui = UISettings(**data.get("ui", {}))
         config.settings = AppSettings(**data.get("settings", {}))
         return config
@@ -50,7 +53,7 @@ def load_config() -> Config:
 def save_config(config: Config) -> None:
     config_path = get_config_path()
     data = {
-        "monitored_repos": [vars(repo) for repo in config.monitored_repos],
+        "monitored_repos": [{"path": r.path, "has_origin": r.has_origin, "last_status": r.last_status.value, "debounce_ms": r.debounce_ms, "auto_init": r.auto_init, "paused": r.paused} for r in config.monitored_repos],
         "ui": vars(config.ui),
         "settings": vars(config.settings)
     }
