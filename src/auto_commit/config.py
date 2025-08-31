@@ -40,7 +40,11 @@ def load_config() -> Config:
     if config_path.exists():
         with open(config_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        return Config(**data)
+        config = Config()
+        config.monitored_repos = [RepoEntry(**repo) for repo in data.get("monitored_repos", [])]
+        config.ui = UISettings(**data.get("ui", {}))
+        config.settings = AppSettings(**data.get("settings", {}))
+        return config
     return Config()
 
 def save_config(config: Config) -> None:
